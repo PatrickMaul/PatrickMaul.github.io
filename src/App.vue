@@ -22,17 +22,18 @@ export default {
         0.1,
         1000
       );
-      camera.position.z = 60;
+      camera.position.z = 100;
 
       const renderer = new THREE.WebGLRenderer({ alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      document.getElementById("app").appendChild(renderer.domElement);
+
       renderer.setClearColor(0x000000, 0);
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
       const controls = new OrbitControls(camera, renderer.domElement);
 
+      document.getElementById("app").appendChild(renderer.domElement);
       return [scene, camera, renderer, controls];
     },
     loadTexture(tex) {
@@ -48,9 +49,11 @@ export default {
       const mesh = new THREE.Mesh(geometry, material);
 
       mesh.name = "earth";
+      mesh.castShadow = true;
       mesh.receiveShadow = true;
 
       mesh.add(this.initMoon());
+
       scene.add(mesh);
     },
     initMoon() {
@@ -59,8 +62,8 @@ export default {
       const mesh = new THREE.Mesh(geometry, material);
 
       mesh.name = "moon";
-      mesh.position.x = 35;
       mesh.castShadow = true;
+      mesh.receiveShadow = true;
 
       return mesh;
     },
@@ -68,25 +71,30 @@ export default {
   mounted() {
     const [scene, camera, renderer, controls] = this.initThree();
     this.initEarth(scene);
+    // scene.add(this.initMoon());
 
     const earth = scene.getObjectByName("earth");
+    const moon = scene.getObjectByName("moon");
+    moon.position.z = 50;
 
-    // white spotlight shining from the side, casting a shadow
-    const spotLight = new THREE.SpotLight(0xffffff, 1, 0, 40);
-    spotLight.position.set(0, 0, 100);
+    //Create a DirectionalLight and turn on shadows for the light
+    const light = new THREE.SpotLight(0xffffff);
+    light.position.set(0, 0, 100); //default; light shining from top
+    light.castShadow = true; // default false
+    scene.add(light);
 
-    spotLight.castShadow = true;
+    //Set up shadow properties for the light
+    light.shadow.mapSize.width = 1024; // default
+    light.shadow.mapSize.height = 1024; // default
+    light.shadow.camera.near = 0.5; // default
+    light.shadow.camera.far = 200; // default
 
-    spotLight.shadow.mapSize.width = 1024;
-    spotLight.shadow.mapSize.height = 1024;
+    light.target = earth;
+    light.name = "sun";
 
-    spotLight.shadow.camera.near = 500;
-    spotLight.shadow.camera.far = 4000;
-    spotLight.shadow.camera.fov = 30;
-    spotLight.target = earth;
-    spotLight.name = "sun";
-
-    scene.add(spotLight);
+    scene.add(light);
+    // const helper = new THREE.CameraHelper(light.shadow.camera);
+    // scene.add(helper);
 
     // const sun = scene.getObjectByName("sun");
 
