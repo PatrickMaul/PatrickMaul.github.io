@@ -5,7 +5,7 @@
       <h1 class="subtitle-1">I also need a little more time</h1>
     </div>
     <div id="simulation" />
-    <v-btn block text tile absolute bottom @click="openGithub">
+    <v-btn block text tile class="action-btn" @click="openGithub">
       Contact me
     </v-btn>
     <!--  -->
@@ -203,12 +203,11 @@ export default {
   right: 0;
   text-align: center;
 }
-.ab-bottom {
+.action-btn {
   position: absolute;
   z-index: 1;
-  bottom: 0;
+  bottom: 2rem;
   left: 0;
   right: 0;
-  text-align: center;
 }
 </style>
