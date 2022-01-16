@@ -1,8 +1,8 @@
 <template>
   <v-app class="d-flex">
     <div class="ab-top mt-8">
-      <h1 class="headline">The earth wasn't created in a day</h1>
-      <h1 class="subtitle-1">I also need a little more time</h1>
+      <h1 class="headline">The earth wasn't created in a day ...</h1>
+      <h3 class="subtitle-1">... unfortunately neither does this page 😭</h3>
       <v-btn :block="onMobile" text tile @click="openGithub">
         Contact me
       </v-btn>
