@@ -4,29 +4,27 @@
     <v-main>
       <router-view />
     </v-main>
+    <footer-bar :onMobile="onMobile" />
   </v-app>
 </template>
 
 <script>
-import appBar from './components/app-bar.vue'
+import AppBar from './components/app-bar.vue'
+import FooterBar from './components/footer-bar.vue'
+
 export default {
   name: 'App',
   components: {
-    appBar,
+    AppBar,
+    FooterBar,
   },
   computed: {
     onMobile() {
-      this.setStoreVariable()
       return this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.sm
     },
   },
   data: () => ({
     //
   }),
-  methods: {
-    setStoreVariable() {
-      this.$store.commit('set', this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.sm)
-    },
-  },
 }
 </script>
