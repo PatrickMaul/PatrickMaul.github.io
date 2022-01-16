@@ -1,5 +1,14 @@
 <template>
-  <v-app id="app">
+  <v-app class="d-flex">
+    <div id="simulation" />
+    <div id="curved-text">
+      <p id="test">
+        <!-- Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus,
+        iusto, accusamus neque impedit fuga beatae qui cupiditate iste tempore
+        id maxime quasi aliquid cumque totam adipisci. Provident eaque quos
+        eligendi? -->
+      </p>
+    </div>
     <!--  -->
   </v-app>
 </template>
@@ -7,8 +16,10 @@
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import CircleType from "circletype";
 import * as earthTex from "./assets/earth.jpeg";
 import * as moonTex from "./assets/moon.jpeg";
+import * as sunTex from "./assets/sun.jpg";
 import * as bgTex from "./assets/stars_milky_way.jpg";
 
 export default {
@@ -25,7 +36,7 @@ export default {
         0.1,
         1000
       );
-      camera.position.z = 50;
+      camera.position.z = 150;
 
       const renderer = new THREE.WebGLRenderer({ alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -37,11 +48,9 @@ export default {
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enablePan = false;
       controls.enableRotate = true;
-      controls.enableZoom = false;
+      controls.enableZoom = true;
 
-      controls.maxDistance = 100;
-
-      document.getElementById("app").appendChild(renderer.domElement);
+      document.getElementById("simulation").appendChild(renderer.domElement);
       return [scene, camera, renderer, controls];
     },
     loadTexture(tex) {
@@ -74,11 +83,16 @@ export default {
       return mesh;
     },
     initLights(scene, targetObject, getHelp) {
+      const geometry = new THREE.SphereGeometry(60, 1024, 1024);
+      const texture = new THREE.TextureLoader().load(sunTex);
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const mesh = new THREE.Mesh(geometry, material);
+
+      mesh.name = "sun";
+
       const light = new THREE.SpotLight(0xffffff);
 
-      light.position.set(-100, 0, 100);
       light.castShadow = true;
-      scene.add(light);
 
       //Set up shadow properties for the light
       light.shadow.mapSize.width = 1024;
@@ -87,9 +101,9 @@ export default {
       light.shadow.camera.far = 300;
 
       light.target = targetObject;
-      light.name = "sun";
 
-      scene.add(light);
+      mesh.add(light);
+      scene.add(mesh);
 
       const ambiLight = new THREE.AmbientLight(0x404040, 0.2);
       scene.add(ambiLight);
@@ -119,39 +133,51 @@ export default {
     // },
   },
   mounted() {
+    new CircleType(document.getElementById("test"));
+
     const [scene, camera, renderer, controls] = this.initThree();
     this.generateBackground(scene);
     this.initEarth(scene);
     scene.add(this.initMoon());
 
     const earth = scene.getObjectByName("earth");
-    const moon = scene.getObjectByName("moon");
-    moon.position.x = 40;
-
+    earth.rotation.z = 0.07;
     this.initLights(scene, earth, false);
 
+    const moon = scene.getObjectByName("moon");
     const sun = scene.getObjectByName("sun");
 
+    moon.position.x = 40;
+
     // Pointlist for drawing orbit (only in development)
-    // let points = [];
+    // let pointsMoon = [];
+    // let pointsEarth = [];
     // let self = this;
 
     function animate() {
       // Rotation
-      earth.rotation.y = Date.now() * -0.0001;
+      sun.rotation.y = Date.now() * -0.00001;
+      earth.rotation.y = Date.now() * 0.0001;
       moon.rotation.y = Date.now() * 0.001;
 
       // Orbit
-      moon.position.x = 100 * Math.cos(Date.now() * -0.0001) + 0;
-      moon.position.z = 100 * Math.sin(Date.now() * -0.0001) + 0;
-      sun.position.x = 150 * Math.cos(Date.now() * 0.0001) + 0;
-      sun.position.z = 150 * Math.sin(Date.now() * 0.0001) + 0;
+
+      earth.position.x = 150 * Math.cos(Date.now() * 0.0001) + 0;
+      earth.position.z = 150 * Math.sin(Date.now() * 0.0001) + 0;
+      moon.position.x =
+        earth.position.x + 30 * Math.cos(Date.now() * 0.001) + 0;
+      moon.position.z =
+        earth.position.z + 30 * Math.sin(Date.now() * 0.001) + 0;
 
       // Push points for drawing orbit (only in development)
-      // points.push(
+      // pointsMoon.push(
       //   new THREE.Vector3(moon.position.x, moon.position.y, moon.position.z)
       // );
-      // scene.add(self.drawPlanetLine(points, 0xff0000));
+      // scene.add(self.drawPlanetLine(pointsMoon, 0xff0000));
+      // pointsEarth.push(
+      //   new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z)
+      // );
+      // scene.add(self.drawPlanetLine(pointsEarth, 0x0000ff));
 
       controls.update();
 
@@ -163,3 +189,19 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#simulation {
+  position: relative;
+  z-index: 0;
+}
+
+#curved-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-48%);
+  z-index: 0;
+  display: flex;
+}
+</style>
