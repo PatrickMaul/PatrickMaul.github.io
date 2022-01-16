@@ -3,11 +3,9 @@
     <div class="ab-top mt-8">
       <h1 class="headline">The earth wasn't created in a day</h1>
       <h1 class="subtitle-1">I also need a little more time</h1>
+      <v-btn text tile @click="openGithub"> Contact me </v-btn>
     </div>
     <div id="simulation" />
-    <v-btn block text tile class="action-btn" @click="openGithub">
-      Contact me
-    </v-btn>
     <!--  -->
   </v-app>
 </template>
@@ -202,12 +200,5 @@ export default {
   left: 0;
   right: 0;
   text-align: center;
-}
-.action-btn {
-  position: absolute;
-  z-index: 1;
-  bottom: 2rem;
-  left: 0;
-  right: 0;
 }
 </style>
