@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build and deploy": "vue-cli-service build && push-dir --dir=dist --branch=gh-pages --cleanup",
     "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup",
     "test:unit": "vue-cli-service test:unit"
   },
