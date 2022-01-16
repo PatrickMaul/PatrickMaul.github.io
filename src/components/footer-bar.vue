@@ -5,15 +5,11 @@
         <v-img :src="githubLogoSrc" :max-height="logoSize" :max-width="logoSize" />
       </a>
       <a href="https://www.npmjs.com/~patrickmaul" target="__blank">
-        <v-img
-          src="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg"
-          :max-height="logoSize"
-          :max-width="logoSize"
-        />
+        <v-img :src="require('../assets/npm.png')" :max-height="logoSize" :max-width="logoSize" />
       </a>
     </div>
     <v-spacer />
-    <p id="footer-bar-copyright" class="mb-0 mt-6 align-self-center">
+    <p id="footer-bar-copyright" class="mb-0 mt-2 align-self-center caption">
       {{ `&copy; ${new Date().getFullYear()} Patrick Maul, All Rights Reserved.` }}
     </p>
   </v-footer>
