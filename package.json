@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "deploy": "push-dir --dir=build --branch=gh-pages --cleanup",
+    "build and deploy": "vue-cli-service build && push-dir --dir=build --branch=gh-pages --cleanup",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
