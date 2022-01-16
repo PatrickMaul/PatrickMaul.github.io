@@ -8,6 +8,7 @@
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
 import * as earthTex from "./assets/earth.jpeg";
 import * as moonTex from "./assets/moon.jpeg";
 import * as sunTex from "./assets/sun.jpg";
@@ -16,32 +17,45 @@ import * as bgTex from "./assets/stars_milky_way.jpg";
 export default {
   name: "App",
   data: () => ({
-    //
+    scene: null,
+    camera: null,
+    renderer: null,
   }),
   methods: {
-    initThree() {
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(
-        75,
+    setScene() {
+      this.scene = new THREE.Scene();
+    },
+    setCamera(fov, near, far) {
+      this.camera = new THREE.PerspectiveCamera(
+        fov,
         window.innerWidth / window.innerHeight,
-        0.1,
-        1000
+        near,
+        far
       );
+    },
+    setRenderer() {
+      this.renderer = new THREE.WebGLRenderer({ alpha: true });
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-      const renderer = new THREE.WebGLRenderer({ alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      this.renderer.setClearColor(0x000000, 0);
+      this.renderer.shadowMap.enabled = true;
+      this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    },
+    setControls() {
+      this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+      this.controls.enablePan = false;
+      this.controls.enableRotate = true;
+      this.controls.enableZoom = true;
+    },
+    initThree() {
+      this.setScene();
+      this.setCamera(75, 0.1, 1000);
+      this.setRenderer();
+      this.setControls();
 
-      renderer.setClearColor(0x000000, 0);
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enablePan = false;
-      controls.enableRotate = true;
-      controls.enableZoom = true;
-
-      document.getElementById("simulation").appendChild(renderer.domElement);
-      return [scene, camera, renderer, controls];
+      document
+        .getElementById("simulation")
+        .appendChild(this.renderer.domElement);
     },
     loadTexture(tex) {
       const texture = new THREE.TextureLoader().load(tex);
@@ -50,7 +64,7 @@ export default {
       const material = new THREE.MeshLambertMaterial({ map: texture });
       return material;
     },
-    initEarth(scene) {
+    initEarth() {
       const geometry = new THREE.SphereGeometry(20, 1024, 1024);
       const material = this.loadTexture(earthTex);
       const mesh = new THREE.Mesh(geometry, material);
@@ -59,7 +73,7 @@ export default {
       mesh.castShadow = true;
       mesh.receiveShadow = true;
 
-      scene.add(mesh);
+      this.scene.add(mesh);
     },
     initMoon() {
       const geometry = new THREE.SphereGeometry(3, 1024, 1024);
@@ -70,9 +84,9 @@ export default {
       mesh.castShadow = true;
       mesh.receiveShadow = true;
 
-      return mesh;
+      this.scene.add(mesh);
     },
-    initLights(scene, targetObject, getHelp) {
+    initLights(targetObject, getHelp) {
       const geometry = new THREE.SphereGeometry(60, 1024, 1024);
       const texture = new THREE.TextureLoader().load(sunTex);
       const material = new THREE.MeshBasicMaterial({ map: texture });
@@ -93,17 +107,17 @@ export default {
       light.target = targetObject;
 
       mesh.add(light);
-      scene.add(mesh);
+      this.scene.add(mesh);
 
       const ambiLight = new THREE.AmbientLight(0x404040, 0.2);
-      scene.add(ambiLight);
+      this.scene.add(ambiLight);
 
       if (getHelp) {
         const helper = new THREE.CameraHelper(light.shadow.camera);
-        scene.add(helper);
+        this.scene.add(helper);
       }
     },
-    generateBackground(scene) {
+    generateBackground() {
       const geometry = new THREE.SphereGeometry(500, 30, 30);
 
       let material = new THREE.MeshBasicMaterial({
@@ -112,45 +126,33 @@ export default {
       });
 
       let mesh = new THREE.Mesh(geometry, material);
-      scene.add(mesh);
+      this.scene.add(mesh);
     },
-    // drawPlanetLine(points, colorHEX) {
-    //   const material = new THREE.LineBasicMaterial({ color: colorHEX });
-    //   const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    //   const line = new THREE.Line(geometry, material);
-
-    //   return line;
-    // },
   },
   mounted() {
-    const [scene, camera, renderer, controls] = this.initThree();
-    this.generateBackground(scene);
-    this.initEarth(scene);
-    scene.add(this.initMoon());
+    this.initThree();
+    this.generateBackground();
+    this.initEarth();
+    this.initMoon();
 
-    const earth = scene.getObjectByName("earth");
+    const earth = this.scene.getObjectByName("earth");
     earth.rotation.z = 0.07;
-    this.initLights(scene, earth, false);
+    this.initLights(earth, false);
 
-    const moon = scene.getObjectByName("moon");
-    const sun = scene.getObjectByName("sun");
+    const moon = this.scene.getObjectByName("moon");
+    const sun = this.scene.getObjectByName("sun");
 
     moon.position.x = 40;
 
-    // Pointlist for drawing orbit (only in development)
-    // let pointsMoon = [];
-    // let pointsEarth = [];
-    // let self = this;
-
+    let self = this;
     function animate() {
-      controls.target = new THREE.Vector3(
+      self.controls.target = new THREE.Vector3(
         earth.position.x,
         earth.position.y,
         earth.position.z
       );
-      camera.position.x = earth.position.x;
-      // camera.position.y = earth.position.y;
-      camera.position.z = earth.position.z - 50;
+      self.camera.position.x = earth.position.x;
+      self.camera.position.z = earth.position.z - 70;
 
       // Rotation
       sun.rotation.y = Date.now() * -0.00001;
@@ -166,19 +168,9 @@ export default {
       moon.position.z =
         earth.position.z + 30 * Math.sin(Date.now() * 0.001) + 0;
 
-      // Push points for drawing orbit (only in development)
-      // pointsMoon.push(
-      //   new THREE.Vector3(moon.position.x, moon.position.y, moon.position.z)
-      // );
-      // scene.add(self.drawPlanetLine(pointsMoon, 0xff0000));
-      // pointsEarth.push(
-      //   new THREE.Vector3(earth.position.x, earth.position.y, earth.position.z)
-      // );
-      // scene.add(self.drawPlanetLine(pointsEarth, 0x0000ff));
+      self.controls.update();
 
-      controls.update();
-
-      renderer.render(scene, camera);
+      self.renderer.render(self.scene, self.camera);
       requestAnimationFrame(animate);
     }
 
