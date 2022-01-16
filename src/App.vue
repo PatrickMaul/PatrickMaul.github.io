@@ -27,7 +27,6 @@ export default {
         0.1,
         1000
       );
-      camera.position.z = 150;
 
       const renderer = new THREE.WebGLRenderer({ alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -144,6 +143,15 @@ export default {
     // let self = this;
 
     function animate() {
+      controls.target = new THREE.Vector3(
+        earth.position.x,
+        earth.position.y,
+        earth.position.z
+      );
+      camera.position.x = earth.position.x;
+      // camera.position.y = earth.position.y;
+      camera.position.z = earth.position.z - 50;
+
       // Rotation
       sun.rotation.y = Date.now() * -0.00001;
       earth.rotation.y = Date.now() * 0.0001;
