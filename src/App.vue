@@ -1,8 +1,10 @@
 <template>
   <v-app class="d-flex">
-    <h1 class="ab-top headline mt-4">The earth wasn't created in a day</h1>
+    <div class="ab-top mt-8">
+      <h1 class="headline">The earth wasn't created in a day</h1>
+      <h1 class="subtitle-1">I also need a little more time</h1>
+    </div>
     <div id="simulation" />
-    <h1 class="ab-bottom headline mb-4">I also need a little more time</h1>
     <!--  -->
   </v-app>
 </template>
