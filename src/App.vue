@@ -5,6 +5,9 @@
       <h1 class="subtitle-1">I also need a little more time</h1>
     </div>
     <div id="simulation" />
+    <v-btn block text tile absolute bottom @click="openGithub">
+      Contact me
+    </v-btn>
     <!--  -->
   </v-app>
 </template>
@@ -26,6 +29,9 @@ export default {
     renderer: null,
   }),
   methods: {
+    openGithub() {
+      window.open("https://github.com/PatrickMaul", "_blank");
+    },
     setScene() {
       this.scene = new THREE.Scene();
     },
