@@ -3,7 +3,9 @@
     <div class="ab-top mt-8">
       <h1 class="headline">The earth wasn't created in a day</h1>
       <h1 class="subtitle-1">I also need a little more time</h1>
-      <v-btn text tile @click="openGithub"> Contact me </v-btn>
+      <v-btn :block="onMobile" text tile @click="openGithub">
+        Contact me
+      </v-btn>
     </div>
     <div id="simulation" />
     <!--  -->
@@ -26,6 +28,11 @@ export default {
     camera: null,
     renderer: null,
   }),
+  computed: {
+    onMobile() {
+      return this.$vuetify.breakpoint.xs;
+    },
+  },
   methods: {
     openGithub() {
       window.open("https://github.com/PatrickMaul", "_blank");
