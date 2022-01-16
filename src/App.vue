@@ -1,14 +1,6 @@
 <template>
   <v-app class="d-flex">
     <div id="simulation" />
-    <div id="curved-text">
-      <p id="test">
-        <!-- Lorem ipsum dolor sit, amet consectetur adipisicing elit. Doloribus,
-        iusto, accusamus neque impedit fuga beatae qui cupiditate iste tempore
-        id maxime quasi aliquid cumque totam adipisci. Provident eaque quos
-        eligendi? -->
-      </p>
-    </div>
     <!--  -->
   </v-app>
 </template>
@@ -16,7 +8,6 @@
 <script>
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import CircleType from "circletype";
 import * as earthTex from "./assets/earth.jpeg";
 import * as moonTex from "./assets/moon.jpeg";
 import * as sunTex from "./assets/sun.jpg";
@@ -133,8 +124,6 @@ export default {
     // },
   },
   mounted() {
-    new CircleType(document.getElementById("test"));
-
     const [scene, camera, renderer, controls] = this.initThree();
     this.generateBackground(scene);
     this.initEarth(scene);
