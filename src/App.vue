@@ -1,6 +1,8 @@
 <template>
   <v-app class="d-flex">
+    <h1 class="ab-top headline mt-4">The earth wasn't created in a day</h1>
     <div id="simulation" />
+    <h1 class="ab-bottom headline mb-4">I also need a little more time</h1>
     <!--  -->
   </v-app>
 </template>
@@ -185,12 +187,20 @@ export default {
   z-index: 0;
 }
 
-#curved-text {
+.ab-top {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateY(-48%);
-  z-index: 0;
-  display: flex;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+.ab-bottom {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
 }
 </style>
