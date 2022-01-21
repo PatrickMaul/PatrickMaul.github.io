@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     logoSrc() {
-      return this.$vuetify.theme.dark ? require('../assets/PMWhite.svg') : require('../assets/PMBlack.svg')
+      return this.$vuetify.theme.dark ? require('../assets/PM-White.svg') : require('../assets/PM-Black.svg')
     },
   },
   data: () => ({
