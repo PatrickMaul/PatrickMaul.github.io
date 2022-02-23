@@ -7,7 +7,7 @@ npm install
 
 
 |test|test2|
-|---|---|
+|-------|-----|
 |David|Patrick|
 
 ### Compiles and hot-reloads for development
